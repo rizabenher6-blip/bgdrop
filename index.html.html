@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BGDrop — Free AI Background Remover</title>
+<meta name="description" content="Remove image backgrounds instantly with AI. Free to start."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;
+  --surface:#13131a;
+  --surface2:#1c1c26;
+  --border:#2a2a3a;
+  --border2:#3a3a50;
+  --text:#f0f0f5;
+  --muted:#8888aa;
+  --accent:#22c55e;
+  --accent2:#16a34a;
+  --radius:10px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px}
+.app{min-height:100vh;display:flex;flex-direction:column}
+
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border);background:var(--surface)}
+.logo{font-size:18px;font-weight:600}
+.logo span{color:var(--accent)}
+.header-tag{font-size:12px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);padding:4px 10px;border-radius:20px}
+
+.ad-slot{background:var(--surface);border:1px dashed var(--border2);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;padding:8px}
+.ad-label{font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted)}
+.ad-txt{font-size:10px;color:var(--muted)}
+
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;flex-direction:column;gap:24px}
+.hero{text-align:center;max-width:460px}
+.hero h1{font-size:30px;font-weight:600;line-height:1.3;letter-spacing:-0.4px;margin-bottom:10px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{font-size:14px;color:var(--muted);line-height:1.6}
+
+.dropzone{width:100%;max-width:480px;border:1.5px dashed var(--border2);border-radius:14px;padding:40px 20px;text-align:center;cursor:pointer;transition:all 0.15s;background:var(--surface)}
+.dropzone:hover{border-color:var(--accent);background:var(--surface2)}
+.dropzone.drag{border-color:var(--accent);background:rgba(34,197,94,0.07)}
+.dz-icon{font-size:36px;margin-bottom:10px}
+.dz-title{font-size:14px;font-weight:500;margin-bottom:4px}
+.dz-sub{font-size:12px;color:var(--muted)}
+input[type=file]{display:none}
+
+.result-area{width:100%;max-width:480px;display:none;flex-direction:column;gap:14px}
+.result-area.show{display:flex}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.compare-box{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--border);aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:repeating-conic-gradient(#1a1a24 0% 25%, #24242e 0% 50%) 50% / 16px 16px}
+.compare-box img{width:100%;height:100%;object-fit:contain}
+.compare-label{position:absolute;top:6px;left:6px;font-size:10px;background:rgba(0,0,0,0.7);color:#fff;padding:2px 8px;border-radius:10px;font-weight:500}
+
+.processing{display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:30px}
+.processing.show{display:flex}
+.spinner{width:34px;height:34px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.proc-label{font-size:14px;color:var(--muted)}
+
+.actions{display:flex;gap:8px;justify-content:center}
+.btn{border:1px solid var(--border2);border-radius:var(--radius);padding:9px 18px;font-size:13px;cursor:pointer;background:var(--surface);color:var(--text);transition:all 0.15s;font-family:inherit}
+.btn:hover{background:var(--surface2)}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:hover{background:var(--accent2)}
+
+.plans-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:480px;margin-top:6px}
+.plan-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.plan-card.featured{border-color:var(--accent);background:var(--surface2)}
+.plan-name{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
+.plan-price{font-size:20px;font-weight:600;margin:5px 0 2px}
+.plan-price span{font-size:11px;font-weight:400;color:var(--muted)}
+.plan-limit{font-size:11px;color:var(--muted)}
+
+footer{text-align:center;padding:14px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);background:var(--surface)}
+footer a{color:var(--muted);text-decoration:none}
+footer span{margin:0 8px}
+
+.modal-wrap{position:fixed;inset:0;background:rgba(0,0,0,0.65);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
+.modal-wrap.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:28px;max-width:380px;width:100%}
+.modal h2{font-size:18px;font-weight:600;margin-bottom:8px}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.65}
+.modal input{width:100%;padding:10px 14px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:13px;font-family:inherit;margin-bottom:14px;outline:none}
+.btn-primary-full{width:100%;background:var(--accent);color:#fff;border:none;padding:11px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;margin-bottom:8px;font-family:inherit}
+.btn-ghost-full{width:100%;background:transparent;border:1px solid var(--border);color:var(--muted);padding:9px;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:inherit}
+
+@media(max-width:600px){
+  .hero h1{font-size:24px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="logo"><span>BG</span>Drop</div>
+  <div class="ad-slot" style="width:200px;height:32px;flex-direction:row;gap:6px;border-radius:6px">
+    <span class="ad-label">Ad</span>
+    <span class="ad-txt">728×90 — paste AdSense here</span>
+  </div>
+  <div class="header-tag">Free forever</div>
+</header>
+
+<main>
+  <div class="hero" id="heroBlock">
+    <h1>Remove image<br><em>backgrounds instantly</em></h1>
+    <p>Upload any photo. AI removes the background in seconds.<br>Free to start.</p>
+  </div>
+
+  <div class="dropzone" id="dropzone">
+    <div class="dz-icon">📷</div>
+    <div class="dz-title">Click to upload or drag an image here</div>
+    <div class="dz-sub">PNG, JPG up to 10MB</div>
+    <input type="file" id="fileInput" accept="image/*"/>
+  </div>
+
+  <div class="ad-slot" style="width:100%;max-width:480px;height:54px;flex-direction:row;gap:10px;border-radius:10px">
+    <span class="ad-label">Ad</span>
+    <span class="ad-txt">In-feed native ad — paste AdSense code here</span>
+  </div>
+
+  <div class="processing" id="processing">
+    <div class="spinner"></div>
+    <div class="proc-label" id="procLabel">Removing background...</div>
+    <div class="ad-slot" style="width:300px;height:160px">
+      <span class="ad-label">Advertisement</span>
+      <span class="ad-txt">336×280 — shown while processing<br>best earning placement</span>
+    </div>
+  </div>
+
+  <div class="result-area" id="resultArea">
+    <div class="compare">
+      <div class="compare-box">
+        <span class="compare-label">Before</span>
+        <img id="beforeImg" alt="Original"/>
+      </div>
+      <div class="compare-box">
+        <span class="compare-label">After</span>
+        <img id="afterImg" alt="Result"/>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="resetTool()">New image</button>
+      <button class="btn btn-primary" onclick="downloadResult()">⬇ Download PNG</button>
+    </div>
+  </div>
+
+  <div style="width:100%;max-width:480px" id="plansBlock">
+    <p style="font-size:11px;color:var(--muted);margin-bottom:8px;text-align:center">Free plan included — upgrade for unlimited</p>
+    <div class="plans-row">
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">₹0</div>
+        <div class="plan-limit">10 images/month</div>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">₹149<span>/mo</span></div>
+        <div class="plan-limit">Unlimited</div>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">API</div>
+        <div class="plan-price">₹0.50<span>/img</span></div>
+        <div class="plan-limit">Pay as you go</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center" id="apiHint">
+    <button onclick="openApiModal()" style="background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;text-decoration:underline">Add your Clipdrop API key</button>
+  </div>
+</main>
+
+<footer>
+  Made by <a href="https://algorythma.in">Algorythma</a><span>·</span><a href="#">Privacy</a><span>·</span>Free tool — supported by ads
+</footer>
+</div>
+
+<div class="modal-wrap" id="apiModalWrap">
+  <div class="modal">
+    <h2>Your Clipdrop API key</h2>
+    <p>Get a free key at clipdrop.co/apis — 500 free background removals per month. Stored only in your browser.</p>
+    <input id="cdKeyInput" type="password" placeholder="Your Clipdrop API key"/>
+    <button class="btn-primary-full" onclick="saveKey()">Save key</button>
+    <button class="btn-ghost-full" onclick="closeApiModal()">Cancel</button>
+  </div>
+</div>
+
+<script>
+let cdKey = localStorage.getItem('bgdrop_key') || '';
+let resultDataUrl = '';
+
+function openApiModal(){document.getElementById('apiModalWrap').classList.add('open');}
+function closeApiModal(){document.getElementById('apiModalWrap').classList.remove('open');}
+function saveKey(){
+  const k=document.getElementById('cdKeyInput').value.trim();
+  if(!k){alert('Enter your Clipdrop API key');return;}
+  cdKey=k;
+  localStorage.setItem('bgdrop_key',k);
+  closeApiModal();
+  alert('Key saved! Now upload an image.');
+}
+
+const dropzone=document.getElementById('dropzone');
+const fileInput=document.getElementById('fileInput');
+
+dropzone.addEventListener('click',()=>fileInput.click());
+dropzone.addEventListener('dragover',e=>{e.preventDefault();dropzone.classList.add('drag');});
+dropzone.addEventListener('dragleave',()=>dropzone.classList.remove('drag'));
+dropzone.addEventListener('drop',e=>{
+  e.preventDefault();dropzone.classList.remove('drag');
+  if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change',e=>{
+  if(e.target.files[0])handleFile(e.target.files[0]);
+});
+
+function handleFile(file){
+  if(!cdKey){openApiModal();return;}
+  const reader=new FileReader();
+  reader.onload=async e=>{
+    document.getElementById('beforeImg').src=e.target.result;
+    document.getElementById('heroBlock').style.display='none';
+    document.getElementById('dropzone').style.display='none';
+    document.getElementById('plansBlock').style.display='none';
+    document.getElementById('apiHint').style.display='none';
+    document.getElementById('processing').classList.add('show');
+
+    try{
+      const formData=new FormData();
+      formData.append('image_file',file);
+      const res=await fetch('https://clipdrop-api.co/remove-background/v1',{
+        method:'POST',
+        headers:{'x-api-key':cdKey},
+        body:formData
+      });
+      if(!res.ok)throw new Error('API error: '+res.status);
+      const blob=await res.blob();
+      resultDataUrl=URL.createObjectURL(blob);
+      document.getElementById('afterImg').src=resultDataUrl;
+    }catch(err){
+      console.error(err);
+      alert('Could not remove background. Check your API key or try again.');
+      resultDataUrl=e.target.result;
+      document.getElementById('afterImg').src=e.target.result;
+    }
+
+    document.getElementById('processing').classList.remove('show');
+    document.getElementById('resultArea').classList.add('show');
+  };
+  reader.readAsDataURL(file);
+}
+
+function resetTool(){
+  document.getElementById('heroBlock').style.display='block';
+  document.getElementById('dropzone').style.display='block';
+  document.getElementById('plansBlock').style.display='block';
+  document.getElementById('apiHint').style.display='block';
+  document.getElementById('resultArea').classList.remove('show');
+  fileInput.value='';
+}
+
+function downloadResult(){
+  const a=document.createElement('a');
+  a.href=resultDataUrl;
+  a.download='bgdrop-result.png';
+  a.click();
+}
+</script>
+</body>
+</html>
