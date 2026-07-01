@@ -231,7 +231,7 @@ function handleFile(file){
     try{
       const formData=new FormData();
       formData.append('image_file',file);
-      const res=await fetch('https://clipdrop-api.co/remove-background/v1',{
+      const res=await fetch('https://bgdrop-proxy.rizabenher6.workers.dev',{
         method:'POST',
         headers:{'x-api-key':cdKey},
         body:formData
