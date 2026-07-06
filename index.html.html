@@ -30,7 +30,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
 .header-tag{font-size:12px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);padding:4px 10px;border-radius:20px}
 
 .ad-slot{background:var(--surface);border:1px dashed var(--border2);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;padding:8px}
-  .ad-slot{display:none}
+.ad-slot{display:none}
 .ad-label{font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted)}
 .ad-txt{font-size:10px;color:var(--muted)}
 
@@ -92,7 +92,6 @@ footer span{margin:0 8px}
   .hero h1{font-size:24px}
 }
 </style>
-  <link rel="icon" href=https://magicalstudio.ai/logo.png>
 </head>
 <body>
 <div class="app">
@@ -149,7 +148,23 @@ footer span{margin:0 8px}
     </div>
   </div>
 
- 
+  <div style="width:100%;max-width:480px" id="plansBlock">
+    <p style="font-size:11px;color:var(--muted);margin-bottom:8px;text-align:center">Free plan included — upgrade for unlimited</p>
+    <div class="plans-row">
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">₹0</div>
+        <div class="plan-limit">10 images/month</div>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">₹149<span>/mo</span></div>
+        <div class="plan-limit">Unlimited</div>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">API</div>
+        <div class="plan-price">₹0.50<span>/img</span></div>
+        <div class="plan-limit">Pay as you go</div>
       </div>
     </div>
   </div>
@@ -172,7 +187,7 @@ footer span{margin:0 8px}
     <button class="btn-primary-full" onclick="saveKey()">Save key</button>
     <button class="btn-ghost-full" onclick="closeApiModal()">Cancel</button>
   </div>
-</div> 
+</div>
 
 <script>
 let cdKey = localStorage.getItem('bgdrop_key') || '';
