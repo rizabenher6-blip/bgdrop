@@ -68,12 +68,24 @@ input[type=file]{display:none}
 .btn-primary:hover{background:var(--accent2)}
 
 .plans-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:480px;margin-top:6px}
+.plans-row{display:none}
 .plan-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.plans-card{display:none}
 .plan-card.featured{border-color:var(--accent);background:var(--surface2)}
+.plans-card.featured{display:none}
+
 .plan-name{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
+  .plans-name{display:none}
+
 .plan-price{font-size:20px;font-weight:600;margin:5px 0 2px}
+    .plans-price{display:none}
+
 .plan-price span{font-size:11px;font-weight:400;color:var(--muted)}
+      .plans-price span{display:none}
+
 .plan-limit{font-size:11px;color:var(--muted)}
+        .plans-limit{display:none}
+
 
 footer{text-align:center;padding:14px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);background:var(--surface)}
 footer a{color:var(--muted);text-decoration:none}
@@ -92,6 +104,7 @@ footer span{margin:0 8px}
   .hero h1{font-size:24px}
 }
 </style>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖼️</text></svg>">
 </head>
 <body>
 <div class="app">
